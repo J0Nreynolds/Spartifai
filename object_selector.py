@@ -14,8 +14,8 @@ def main():
     results = results_json['results']
     print "GAY GAY GAY"*1000
 
-    for result in results:
-        result = return_nouns(result)
+    # for result in results:
+    #     result = return_nouns(result)
     print "FUCK FUCK FUCK"*1000
 
     all_results, text_results = find_objects(results)
@@ -23,24 +23,24 @@ def main():
     espeak(text_results_string)
 
 def espeak(string):
-    subprocess.call(['espeak', "-s", "100", string])
+    subprocess.call(['espeak', "-s", "100", "-v", "+f2", string])
 
-def return_nouns(result):
-    words = result['result']['tag']['classes']
-    tagged = nltk.pos_tag(words)
-    non_nouns = parse_tagged(tagged)
-    for index, non_noun in enumerate(non_nouns): 
-        result['result']['tag']['concept_ids'].pop(non_noun-index)
-        result['result']['tag']['classes'].pop(non_noun-index)
-        result['result']['tag']['probs'].pop(non_noun-index)
-    return result
+# def return_nouns(result):
+#     words = result['result']['tag']['classes']
+#     tagged = nltk.pos_tag(words)
+#     non_nouns = parse_tagged(tagged)
+#     for index, non_noun in enumerate(non_nouns): 
+#         result['result']['tag']['concept_ids'].pop(non_noun-index)
+#         result['result']['tag']['classes'].pop(non_noun-index)
+#         result['result']['tag']['probs'].pop(non_noun-index)
+#     return result
 
-def parse_tagged(tagged): 
-    non_nouns = []
-    for index, pair in enumerate(tagged):
-        if 'NN' not in pair:
-            non_nouns.append(index)
-    return non_nouns
+# def parse_tagged(tagged): 
+#     non_nouns = []
+#     for index, pair in enumerate(tagged):
+#         if 'NN' not in pair:
+#             non_nouns.append(index)
+#     return non_nouns
 
 def find_objects(results):
     prominentObjects = []

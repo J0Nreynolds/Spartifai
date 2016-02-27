@@ -27,6 +27,8 @@ while not done:
     x = int(ser.readline())
     if x%15 ==0:
         x = int(ser.readline())
+        rgb = kinect.get_rgb_img()
+        depth = kinect.get_depth_img()
         kinect.save_depth_and_color(x/15)
     if x >= 180:
         done = True

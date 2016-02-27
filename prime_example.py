@@ -2,7 +2,7 @@ from primesense import openni2
 import pdb
 import numpy as np
 import matplotlib.pyplot as plt
-
+import cv2
 
 def print_frame(frame_data, thisType):
     #need to know what format to get the buffer in:
@@ -20,6 +20,8 @@ def print_frame(frame_data, thisType):
         #because the order is so weird, rearrange it (third dimension must be 3 or 4)
         img = np.swapaxes(img, 0, 2)
         img = np.swapaxes(img, 0, 1)
+        img = img[0:424, 0:512]
+
     elif whatisit == (1920*1080*3):
         #color is miraculously in this order
         img.shape = (1080, 1920, 3)
@@ -29,14 +31,17 @@ def print_frame(frame_data, thisType):
     #images still appear to be reflected, but I don't need them to be correct in that way
     print img.shape
     #need both of follwoing: plt.imShow adds image to plot
+    print img
+    cv2.imwrite('file.jpg', img)
     plt.imshow(img)
+
 
 
 openni2.initialize()     # can also accept the path of the OpenNI redistribution
 
 dev = openni2.Device.open_any()
 #file = open('prime_example_output.txt', 'w')
-print dev.get_sensor_info(openni2.SENSOR_DEPTH)
+#print dev.get_sensor_info(openni2.SENSOR_DEPTH)
 
 fig = plt.figure()
 a=fig.add_subplot(1,2,1)

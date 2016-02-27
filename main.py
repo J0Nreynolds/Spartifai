@@ -8,6 +8,7 @@ import cv2
 import pdb
 cap0 = cv2.VideoCapture(0)
 cap1 = cv2.VideoCapture(2)
+pdb.set_trace()
 
 ret0, frame0 = cap0.read()
 cv2.imwrite('frame_capture0.jpg', frame0)
@@ -32,7 +33,6 @@ result1 = clarifai_api.tag_images(open('frame_capture1.jpg', 'rb'))
 print result1
 
 stereo = cv2.StereoBM_create(numDisparities=16, blockSize=5)
-# pdb.set_trace()
 disparity = stereo.compute(cv2.imread('frame_capture0.jpg',0),cv2.imread('frame_capture1.jpg',0))
 plt.imshow(disparity,'gray')
 plt.show()

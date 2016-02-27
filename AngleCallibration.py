@@ -15,4 +15,3 @@ while x < 180:
         print "%d I hate jews" % i
         x = int(ser.readline())
         i = i+1
-    print x

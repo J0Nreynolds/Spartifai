@@ -6,13 +6,11 @@ setviewangle = 84.1
 #get angle data form arduino
 import serial
 ser = serial.Serial('COM4', 19200)
-
-while True:
-    x = ser.readline()
-    time.sleep(.1) # delay for 100 milliseconds
+x = ser.readline()
+while x < 180:
+    time.sleep() #callibrate time
     y = ser.readline()
-    z = y-x
-    if z==10:
-        #take a pic
-    pixel = z*setwidth/setviewangle
+    if y-x >= 10:
+        #take pic
+    x=y
     

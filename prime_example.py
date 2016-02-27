@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 def print_frame(frame_data, thisType):
     #need to know what format to get the buffer in:
-    # if color pixel type is RGB888, then it must be uint8, 
+    # if color pixel type is RGB888, then it must be uint8,
     #otherwise it will split the pixels incorrectly
     img  = np.frombuffer(frame_data, dtype=thisType)
     whatisit = img.size
@@ -20,9 +20,9 @@ def print_frame(frame_data, thisType):
         #because the order is so weird, rearrange it (third dimension must be 3 or 4)
         img = np.swapaxes(img, 0, 2)
         img = np.swapaxes(img, 0, 1)
-    elif whatisit == (640*480*3):
+    elif whatisit == (1920*1080*3):
         #color is miraculously in this order
-        img.shape = (480, 640, 3)
+        img.shape = (1080, 1920, 3)
     else:
         print "Frames are of size: ",img.size
 
@@ -30,23 +30,33 @@ def print_frame(frame_data, thisType):
     print img.shape
     #need both of follwoing: plt.imShow adds image to plot
     plt.imshow(img)
-    #plt.show shows all the currently added figures
-    plt.show()
 
 
 openni2.initialize()     # can also accept the path of the OpenNI redistribution
 
 dev = openni2.Device.open_any()
-file = open('prime_example_output.txt', 'w')
+#file = open('prime_example_output.txt', 'w')
 print dev.get_sensor_info(openni2.SENSOR_DEPTH)
 
+fig = plt.figure()
+a=fig.add_subplot(1,2,1)
 depth_stream = dev.create_depth_stream()
 depth_stream.start()
-frame = depth_stream.read_frame()
-frame_data = frame.get_buffer_as_uint16()
-print_frame(frame_data, np.uint16)
+depth_frame = depth_stream.read_frame()
+depth_frame_data = depth_frame.get_buffer_as_uint16()
+print_frame(depth_frame_data, np.uint16)
 
+b= fig.add_subplot(1,2,2)
+video_stream = dev.create_color_stream()
+video_stream.start()
+rgb_frame = video_stream.read_frame()
+rgb_frame_data = rgb_frame.get_buffer_as_uint8()
+print_frame(rgb_frame_data, np.uint8)
 
+#plt.show shows all the currently added figures
+plt.show()
+
+video_stream.stop()
 depth_stream.stop()
 
 openni2.unload()

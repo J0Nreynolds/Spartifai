@@ -9,33 +9,31 @@ def main():
     clarifai_api = ClarifaiApi()
 
     #ADD ANY MORE IMAGES HERE, PROGRAM SHOULD ADJUST
-    image_array = [open('Captures/capture1.png', 'rb'), open('Captures/capture2.png', 'rb'), open('Captures/capture3.png', 'rb'), open('Captures/capture4.png', 'rb'), open('Captures/capture5.png', 'rb'), open('Captures/capture6.png', 'rb'), open('Captures/capture7.png', 'rb'), open('Captures/capture8.png', 'rb'), open('Captures/capture9.png', 'rb'), open('Captures/capture10.png', 'rb')]
+    image_array = [open('output/rgb_img_' + str(x) + ".jpg", 'rb') for x in xrange(1,13)]
     results_json = clarifai_api.tag_images(image_array)
     results = results_json['results']
-    print "GAY GAY GAY"*1000
-
     # for result in results:
     #     result = return_nouns(result)
-    print "FUCK FUCK FUCK"*1000
 
     all_results, text_results = find_objects(results)
     text_results_string = str(text_results)
     espeak(text_results_string)
 
 def espeak(string):
+    print string
     subprocess.call(['espeak', "-s", "100", "-v", "+f2", string])
 
 # def return_nouns(result):
 #     words = result['result']['tag']['classes']
 #     tagged = nltk.pos_tag(words)
 #     non_nouns = parse_tagged(tagged)
-#     for index, non_noun in enumerate(non_nouns): 
+#     for index, non_noun in enumerate(non_nouns):
 #         result['result']['tag']['concept_ids'].pop(non_noun-index)
 #         result['result']['tag']['classes'].pop(non_noun-index)
 #         result['result']['tag']['probs'].pop(non_noun-index)
 #     return result
 
-# def parse_tagged(tagged): 
+# def parse_tagged(tagged):
 #     non_nouns = []
 #     for index, pair in enumerate(tagged):
 #         if 'NN' not in pair:
@@ -45,6 +43,7 @@ def espeak(string):
 def find_objects(results):
     prominentObjects = []
     namesOfObjects = []
+    print results
     for x in xrange(0 , len(results)-1):
         hourRatio = ((2.0*x + 1.0)/2.0)/len(results)
         timeInHours = put_time_in_hours(hourRatio)
@@ -104,4 +103,3 @@ def add_duplicate_probs(duplicate_pairs, adjustedprobs):
     return adjustedprobs
 
 main()
-

@@ -1,4 +1,4 @@
-/******************************************************************************/
+m/******************************************************************************/
 /*macro definitions of Rotary angle sensor and LED pin*/
 #define ROTARY_ANGLE_SENSOR A0
 #define ADC_REF 5

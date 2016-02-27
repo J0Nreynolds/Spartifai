@@ -3,6 +3,24 @@ import nltk
 import pdb
 from collections import Counter
 from collections import defaultdict
+import subprocess
+
+def main():
+    clarifai_api = ClarifaiApi()
+
+    image_array = [open('Captures/capture1.png', 'rb'), open('Captures/capture2.png', 'rb'), open('Captures/capture3.png', 'rb'), open('Captures/capture4.png', 'rb'), open('Captures/capture5.png', 'rb'), open('Captures/capture6.png', 'rb'), open('Captures/capture7.png', 'rb'), open('Captures/capture8.png', 'rb'), open('Captures/capture9.png', 'rb'), open('Captures/capture10.png', 'rb')]
+    results_json = clarifai_api.tag_images(image_array)
+    results = results_json['results']
+
+    for result in results:
+        result = return_nouns(result)
+
+    all_results, text_results = find_objects(results)
+    text_results_string = str(text_results)
+    espeak(text_results_string)
+
+def espeak(string):
+    subprocess.call(['espeak', "-s", "100", string])
 
 def return_nouns(result):
     words = result['result']['tag']['classes']
@@ -23,6 +41,7 @@ def parse_tagged(tagged):
 
 def find_objects(results):
     prominentObjects = []
+    namesOfObjects = []
     for x in xrange(0 , len(results)-1):
         highestInfo = []
         effectiveids = results[x]['result']['tag']['concept_ids'] + results[x+1]['result']['tag']['concept_ids']
@@ -36,10 +55,11 @@ def find_objects(results):
         indexOfHighest = find_most_likely(adjustedprobs)
         highestInfo.append(effectiveids[indexOfHighest])
         highestInfo.append(effectivenames[indexOfHighest])
+        namesOfObjects.append(effectivenames[indexOfHighest])
         highestInfo.append(effectiveprobs[indexOfHighest])
 
         prominentObjects.append(highestInfo)
-    return prominentObjects
+    return prominentObjects, namesOfObjects
 
 def find_most_likely(adjustedprobs):
     index = 0
@@ -69,16 +89,5 @@ def add_duplicate_probs(duplicate_pairs, adjustedprobs):
         adjustedprobs[index1] = 0
     return adjustedprobs
 
-clarifai_api = ClarifaiApi()
-
-image_array = [open('Captures/capture1.png', 'rb'), open('Captures/capture2.png', 'rb'), open('Captures/capture3.png', 'rb'), open('Captures/capture4.png', 'rb'), open('Captures/capture5.png', 'rb'), open('Captures/capture6.png', 'rb'), open('Captures/capture7.png', 'rb'), open('Captures/capture8.png', 'rb'), open('Captures/capture9.png', 'rb'), open('Captures/capture10.png', 'rb')]
-results_json = clarifai_api.tag_images(image_array)
-results = results_json['results']
-
-for result in results:
-    result = return_nouns(result)
-
-prominentObjects = find_objects(results)
-
-print prominentObjects
+main()
 

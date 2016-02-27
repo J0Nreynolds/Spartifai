@@ -6,7 +6,8 @@ from matplotlib import pyplot as plt
 import numpy as np
 import cv2
 import pdb
-cap0 = cv2.VideoCapture(1)
+cap0 = cv2.VideoCapture(0)
+cap1 = cv2.VideoCapture(2)
 
 ret0, frame0 = cap0.read()
 cv2.imwrite('frame_capture0.jpg', frame0)
@@ -19,11 +20,11 @@ clarifai_api = ClarifaiApi() # assumes environment variables are set.
 result0 = clarifai_api.tag_images(open('frame_capture0.jpg', 'rb'))
 print result0
 
-continueInput = raw_input("Say yes for picture 2")
-while continueInput != "yes":
-  continueInput = raw_input("Say yes for picture 2")
+# continueInput = raw_input("Say yes for picture 2")
+# while continueInput != "yes":
+#   continueInput = raw_input("Say yes for picture 2")
 
-ret1, frame1 = cap0.read()
+ret1, frame1 = cap1.read()
 cv2.imwrite('frame_capture1.jpg', frame1)
 cv2.imshow('frame1', frame1)
 

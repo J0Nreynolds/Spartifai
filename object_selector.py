@@ -1,0 +1,3 @@
+results_json = clarifai_api.tag_images([open('/Captures/capture1.jpeg', 'rb'), open('/Captures/capture2.jpeg', 'rb'), open('/Captures/capture3.jpeg', 'rb'), open('/Captures/capture4.jpeg', 'rb'), open('/Captures/capture5.jpeg', 'rb'), open('/Captures/capture6.jpeg', 'rb'), open('/Captures/capture7.jpeg', 'rb'), open('/Captures/capture8.jpeg', 'rb'), open('/Captures/capture9.jpeg', 'rb'), open('/Captures/capture10.jpeg', 'rb')])
+results = results_json.results
+print results

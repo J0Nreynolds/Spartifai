@@ -37,7 +37,6 @@ def print_frame(frame_data, thisType):
 openni2.initialize()     # can also accept the path of the OpenNI redistribution
 
 dev = openni2.Device.open_any()
-file = open('prime_example_output.txt', 'w')
 print dev.get_sensor_info(openni2.SENSOR_DEPTH)
 
 depth_stream = dev.create_depth_stream()

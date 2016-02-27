@@ -12,5 +12,7 @@ while True:
     time.sleep(.1) # delay for 100 milliseconds
     y = ser.readline()
     z = y-x
+    if z==10:
+        #take a pic
     pixel = z*setwidth/setviewangle
     

@@ -1,16 +1,16 @@
-m/******************************************************************************/
+/******************************************************************************/
 /*macro definitions of Rotary angle sensor and LED pin*/
 #define ROTARY_ANGLE_SENSOR A0
 #define ADC_REF 5
 #define GROVE_VCC 5//VCC of the grove interface is normally 5v
 #define FULL_ANGLE 300//full value of the rotary angle is 300 degrees
-void setup() 
+void setup()
 {
   Serial.begin(19200);
   pinsInit();
 }
 
-void loop() 
+void loop()
 {
   int degrees;
   degrees = getDegree();

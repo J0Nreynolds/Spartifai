@@ -17,7 +17,6 @@ def parse_tagged(tagged):
     for index, pair in enumerate(tagged):
         if 'NN' not in pair:
             non_nouns.append(index)
-    print(non_nouns)
     return non_nouns
 
 clarifai_api = ClarifaiApi()

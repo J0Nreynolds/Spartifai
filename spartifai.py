@@ -1,14 +1,15 @@
+from kinect_interface import KinectInterface
+
 #Get width
 
 setwidth = 1920
 setviewangle = 84.1
 
-#get angle data form arduino
+#get angle data from arduino
 import serial
 import time
+kinect = KinectInterface()
 ser = serial.Serial('/dev/cu.usbmodem1411', 19200)
-x = int(ser.readline())
-print x
 
 # i = 1
 # while x < 180:
@@ -19,11 +20,13 @@ print x
 #     print int(ser.readline())
 
 done = False
+
+x = int(ser.readline())
+kinect.save_depth_and_color(x/15)
 while not done:
     x = int(ser.readline())
     if x%15 ==0:
-        print "%s I hate jews" % str(x/15)
+        x = int(ser.readline())
+        kinect.save_depth_and_color(x/15)
     if x >= 180:
         done = True
-
-    print int(ser.readline())

@@ -28,7 +28,6 @@ def main():
     say(text_results_string)
 
 def say(string):
-    print string
     subprocess.call(['say', string])
 
 def find_objects():
@@ -124,4 +123,3 @@ namesOfObjects = []
 names = []
 
 main()
-

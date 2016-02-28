@@ -28,10 +28,10 @@ def main():
     find_objects()
     text_results_string = str(namesOfObjects)
     say(text_results_string)
-
+# reads out output
 def say(string):
     subprocess.call(['say', string])
-
+#iterates trhough relevantData to get our data output
 def find_objects():
     del prominentObjects[:]
     del namesOfObjects[:]
@@ -45,7 +45,7 @@ def find_objects():
     while(isDone == False):
         find_objects()
     pass
-
+#checks to make sure there's not too many repeats 
 def checkForPopular():
     D = defaultdict(list)
     for i,item in enumerate(names):
@@ -61,7 +61,7 @@ def checkForPopular():
         return False
     else:
         return True
-
+#this is the function that actually collects all the data (iterated over in find object), by analyzing image overlap
 def find_highest(x):
     hourRatio = ((2.0*x + 1.0)/2.0)/len(relevantData)
     timeInHours = put_time_in_hours(hourRatio)
@@ -82,7 +82,7 @@ def find_highest(x):
     namesOfObjects.append(str(effectivenames[indexOfHighest]) + " at " + str(int(timeInHours)) + " o'clock.")
 
     return highestInfo
-
+#convert degree ratio to hours
 def put_time_in_hours(hourRatio):
     hours = round(hourRatio*6, 0)
     adjustedhours = 0
@@ -91,26 +91,26 @@ def put_time_in_hours(hourRatio):
     else :
         adjustedhours = hours + 9
     return adjustedhours
-
+#finds the highest prob. object
 def find_most_likely(adjustedprobs):
     index = 0
     for x in xrange(0, len(adjustedprobs)):
         if adjustedprobs[index] < adjustedprobs[x]:
             index = x
     return index
-
+#lowers the impact of repeat
 def adjust_probs(effectiveprobs):
     for x in xrange(0,len(effectiveprobs)):
         effectiveprobs[x] -= .85
     return effectiveprobs
-
+#finds the duplicate key: value pairs once two image results are merged
 def find_duplicates(effectiveids):
     D = defaultdict(list)
     for i,item in enumerate(effectiveids):
         D[item].append(i)
     D = {k:v for k,v in D.items() if len(v)>1}
     return D
-
+#adds together two duplicate key-value pairs
 def add_duplicate_probs(duplicate_pairs, adjustedprobs):
     for x in xrange(0,len(duplicate_pairs)):
         duplicate_pair = duplicate_pairs.itervalues().next()

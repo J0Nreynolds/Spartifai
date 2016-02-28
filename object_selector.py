@@ -8,62 +8,42 @@ import subprocess
 def main():
     clarifai_api = ClarifaiApi()
 
-    #ADD ANY MORE IMAGES HERE, PROGRAM SHOULD ADJUST
     image_array = [open('output/rgb_img_' + str(x) + ".jpg", 'rb') for x in xrange(1,13)]
     results_json = clarifai_api.tag_images(image_array)
     results = results_json['results']
-    # for result in results:
-    #     result = return_nouns(result)
-
-    all_results, text_results = find_objects(results)
-    text_results_string = str(text_results)
-    espeak(text_results_string)
+    return results
 
 def espeak(string):
     print string
     subprocess.call(['espeak', "-s", "100", "-v", "+f2", string])
 
-# def return_nouns(result):
-#     words = result['result']['tag']['classes']
-#     tagged = nltk.pos_tag(words)
-#     non_nouns = parse_tagged(tagged)
-#     for index, non_noun in enumerate(non_nouns):
-#         result['result']['tag']['concept_ids'].pop(non_noun-index)
-#         result['result']['tag']['classes'].pop(non_noun-index)
-#         result['result']['tag']['probs'].pop(non_noun-index)
-#     return result
-
-# def parse_tagged(tagged):
-#     non_nouns = []
-#     for index, pair in enumerate(tagged):
-#         if 'NN' not in pair:
-#             non_nouns.append(index)
-#     return non_nouns
-
 def find_objects(results):
-    prominentObjects = []
-    namesOfObjects = []
     print results
     for x in xrange(0 , len(results)-1):
-        hourRatio = ((2.0*x + 1.0)/2.0)/len(results)
-        timeInHours = put_time_in_hours(hourRatio)
-        highestInfo = []
-        effectiveids = results[x]['result']['tag']['concept_ids'] + results[x+1]['result']['tag']['concept_ids']
-        effectiveprobs = results[x]['result']['tag']['probs'] + results[x+1]['result']['tag']['probs']
-        effectivenames = results[x]['result']['tag']['classes'] + results[x+1]['result']['tag']['classes']
-        adjustedprobs = adjust_probs(effectiveprobs)
-
-        duplicate_pairs = find_duplicates(effectiveids)
-        adjustedprobs = add_duplicate_probs(duplicate_pairs, adjustedprobs)
-
-        indexOfHighest = find_most_likely(adjustedprobs)
-        highestInfo.append(effectiveids[indexOfHighest])
-        highestInfo.append(effectivenames[indexOfHighest])
-        namesOfObjects.append(str(effectivenames[indexOfHighest]) + " at " + str(int(timeInHours)) + " o'clock.")
-        highestInfo.append(effectiveprobs[indexOfHighest])
-
+        highestInfo = get_information(x)
         prominentObjects.append(highestInfo)
-    return prominentObjects, namesOfObjects
+    return namesOfObjects, names
+
+def get_information(x):
+    hourRatio = ((2.0*x + 1.0)/2.0)/len(results) 
+    timeInHours = put_time_in_hours(hourRatio)
+    highestInfo = []
+    effectiveids = results[x]['result']['tag']['concept_ids'] + results[x+1]['result']['tag']['concept_ids']
+    effectiveprobs = results[x]['result']['tag']['probs'] + results[x+1]['result']['tag']['probs']
+    effectivenames = results[x]['result']['tag']['classes'] + results[x+1]['result']['tag']['classes']
+    adjustedprobs = adjust_probs(effectiveprobs)
+
+    duplicate_pairs = find_duplicates(effectiveids)
+    adjustedprobs = add_duplicate_probs(duplicate_pairs, adjustedprobs)
+
+    indexOfHighest = find_most_likely(adjustedprobs)
+    highestInfo.append(effectiveids[indexOfHighest])
+    highestInfo.append(effectivenames[indexOfHighest])
+    names.append(str(effectivenames[indexOfHighest]))
+    namesOfObjects.append(str(effectivenames[indexOfHighest]) + " at " + str(int(timeInHours)) + " o'clock.")
+    highestInfo.append(effectiveprobs[indexOfHighest])
+
+    return highestInfo
 
 def put_time_in_hours(hourRatio):
     hours = round(hourRatio*6, 0)
@@ -101,5 +81,19 @@ def add_duplicate_probs(duplicate_pairs, adjustedprobs):
         adjustedprobs[index0] += adjustedprobs[index1]
         adjustedprobs[index1] = 0
     return adjustedprobs
+def check_room_qualities(prominentObjects, text_results, names):
+    freqs = Counter(names).items()
+    for i, name in freqs:
+        if freqs[i][1] >= 3:
+            prominentObjects.pop(i)
+            prominentObjects.insert(i, get_information(i))
+    print freqs
 
-main()
+prominentObjects = []
+namesOfObjects = []
+names = []
+results = main()
+text_results, names = find_objects(results)
+check_room_qualities(prominentObjects, text_results, names)
+text_results_string = str(text_results)
+espeak(text_results_string)

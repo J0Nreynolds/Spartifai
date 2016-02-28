@@ -19,15 +19,23 @@ ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
 #         x = int(ser.readline())
 #         i = i+1
 #     print int(ser.readline())
-
+angle = 15
+mins = [0]*int(180/angle)
 done = False
-
 x = int(ser.readline())
-kinect.save_depth_and_color(x/15)
+kinect.save_depth_and_color(x/angle)
 while not done:
     x = int(ser.readline())
     print x
-    if x%15 ==0:
-        kinect.save_depth_and_color(x/15)
+    if x%angle ==0:
+        mins[int(x/angle)-1] = kinect.save_depth_and_color(int(x/angle))
     if x >= 180:
         done = True
+
+minVal = mins[0]
+minIndex = 0
+for index, distance in enumerate(mins):
+    if distance < min:
+        minVal = distance # in millimeters
+        minIndex = index
+print "The closest object appears at " + str(minIndex) + " and is " + str(minVal) + "."

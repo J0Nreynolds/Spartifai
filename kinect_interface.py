@@ -2,6 +2,8 @@ from primesense import openni2
 import numpy as np
 import scipy.misc as misc
 import os
+import math
+import cv2
 
 
 
@@ -45,9 +47,26 @@ class KinectInterface:
     def save_depth_and_color(self, iteration):
         depth_img = self.get_depth_img()
         rgb_img = self.get_rgb_img()
+        # depth_inquiry[depth_inquiry > 180] = 0
         misc.imsave(self.path +'/output/rgb_img_'+ str(iteration) + '.jpg', rgb_img)
         misc.imsave(self.path +'/output/depth_img_'+ str(iteration) + '.jpg', depth_img)
 
+        depth_inquiry = depth_img.copy()
+        # Depth threshold test - gets rid of near
+        depth_inquiry[depth_inquiry < 50] = 65535
+
+        # depth_inquiry[depth_inquiry > 0] = 255
+        median = cv2.medianBlur(depth_inquiry,5)
+
+        median = cv2.cvtColor(median, cv2.COLOR_BGR2GRAY)
+        # colors = np.zeros(median.shape)
+        # for index, x in np.ndenumerate(colors):
+        #     colors
+        minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(median)
+        print (str(minVal) + " is at " + str(minLoc))
+        x,y,z = openni2.convert_depth_to_world(self.depth_stream, minLoc[0], minLoc[1], minVal)
+        print (x,y,z)
+        return math.sqrt(pow(x,2)+pow(y,2)+pow(z,2))
 
     def close(self):
         self.rgb_stream.close()

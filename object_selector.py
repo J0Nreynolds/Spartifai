@@ -21,9 +21,9 @@ def main():
     image_array = [open('output/rgb_img_' + str(x) + ".jpg", 'rb') for x in xrange(1,13)]
     results_json = clarifai_api.tag_images(image_array)
     results = results_json['results']
-    hashmap = createHashmap(results)
+    relevantData = createHashmap(results)
 
-    find_objects(results)
+    find_objects(relevantData)
     text_results_string = str(namesOfObjects)
     espeak(text_results_string)
 
@@ -31,56 +31,55 @@ def espeak(string):
     print string
     subprocess.call(['espeak', "-s", "100", "-v", "+f2", string])
 
-def find_objects(results):
-    print results
-    for x in xrange(0 , len(results)-1):
-        highestInfo = find_highest(x, results)
+def find_objects(relevantData):
+    del prominentObjects[:]
+    del namesOfObjects[:]
+    del names[:]
+    for x in xrange(0 , len(relevantData)-1):
+        highestInfo = find_highest(x, relevantData)
         prominentObjects.append(highestInfo)
-    # checkForPopular(results)
+    
+    relevantData, isDone = checkForPopular(relevantData)
 
-def checkForPopular(results):
+    while(isDone == False):
+        find_objects(relevantData)
+
+def checkForPopular(relevantData):
     D = defaultdict(list)
     for i,item in enumerate(names):
         D[item].append(i)
     D = {k:v for k,v in D.items() if len(v)>1}
-    a = 0
 
-    for x in xrange(0, len(D)):
-        indices = D.itervalues().next()
-        if len(indices)>2:
+    if len(D)!=0 :
+        print D
+        for x in xrange(0, len(D)):
+            indices = D.itervalues().next()
             for index in indices:
-                results[index]['result']['tag']['concept_ids'].pop(0)
-                results[index]['result']['tag']['classes'].pop(0)
-                results[index]['result']['tag']['probs'].pop(0)
+                del relevantData[index][relevantData[index].keys()[0]]
+        return relevantData, False
+    else:
+        return relevantData, True
 
-                highestInfo, timeInHours = find_highest(index, results)
-
-                prominentObjects.pop(index-a)
-                namesOfObjects.pop(index-a)
-                prominentObjects.insert(index-a, highestInfo)
-                namesOfObjects.insert(index-a, str(highestInfo[1]) + " at " + str(int(timeInHours)) + " o'clock.")
-                a += 1
-
-def find_highest(x, results):
-    hourRatio = ((2.0*x + 1.0)/2.0)/len(results)
+def find_highest(x, relevantData):
+    hourRatio = ((2.0*x + 1.0)/2.0)/len(relevantData)
     timeInHours = put_time_in_hours(hourRatio)
     highestInfo = []
-    effectiveids = results[x]['result']['tag']['concept_ids'] + results[x+1]['result']['tag']['concept_ids']
-    effectiveprobs = results[x]['result']['tag']['probs'] + results[x+1]['result']['tag']['probs']
-    effectivenames = results[x]['result']['tag']['classes'] + results[x+1]['result']['tag']['classes']
+    effectiveprobs = relevantData[x].values() + relevantData[x+1].values()
+    effectivenames = relevantData[x].keys() + relevantData[x+1].keys()
     adjustedprobs = adjust_probs(effectiveprobs)
 
-    duplicate_pairs = find_duplicates(effectiveids)
+    duplicate_pairs = find_duplicates(effectivenames)
     adjustedprobs = add_duplicate_probs(duplicate_pairs, adjustedprobs)
 
     indexOfHighest = find_most_likely(adjustedprobs)
-    highestInfo.append(effectiveids[indexOfHighest])
+
     highestInfo.append(effectivenames[indexOfHighest])
-    names.append(str(effectivenames[indexOfHighest]))
-    namesOfObjects.append(str(effectivenames[indexOfHighest]) + " at " + str(int(timeInHours)) + " o'clock.")
     highestInfo.append(effectiveprobs[indexOfHighest])
 
-    return highestInfo, timeInHours
+    names.append(str(effectivenames[indexOfHighest]))
+    namesOfObjects.append(str(effectivenames[indexOfHighest]) + " at " + str(int(timeInHours)) + " o'clock.")
+
+    return highestInfo
 
 def put_time_in_hours(hourRatio):
     hours = round(hourRatio*6, 0)

@@ -17,11 +17,15 @@ def main():
 
     all_results, text_results = find_objects(results)
     text_results_string = str(text_results)
-    espeak(text_results_string)
+    say(text_results_string)
+#     espeak(text_results_string)
+#
+# def espeak(string):
+#     print string
+#     subprocess.call(['espeak', "-s", "100", "-v", "+f2", string])
 
-def espeak(string):
-    print string
-    subprocess.call(['espeak', "-s", "100", "-v", "+f2", string])
+def say(string):
+    subprocess.call(['say', string])
 
 # def return_nouns(result):
 #     words = result['result']['tag']['classes']

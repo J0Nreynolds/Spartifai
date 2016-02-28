@@ -10,6 +10,7 @@ class KinectInterface:
         self.path = os.getcwd()
         openni2.initialize()
         self.device = openni2.Device.open_any()
+        self.device.set_depth_color_sync_enabled(True)
         self.start_depth_stream()
         self.start_rgb_stream()
 

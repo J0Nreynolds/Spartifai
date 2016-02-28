@@ -4,6 +4,16 @@ from collections import Counter
 from collections import defaultdict
 import subprocess
 
+def createHashmap(results):
+    relevantData = []
+    for x in xrange(0,len(results)):
+        resultsData = {}
+        for y in range(0, len(results[x]['result']['tag']['probs'])):
+            resultsData[str(results[x]['result']['tag']['classes'][y])] = results[x]['result']['tag']['probs'][y]
+        relevantData.append(resultsData)
+    print relevantData
+    return relevantData
+
 def main():
     clarifai_api = ClarifaiApi()
 
@@ -11,6 +21,7 @@ def main():
     image_array = [open('output/rgb_img_' + str(x) + ".jpg", 'rb') for x in xrange(1,13)]
     results_json = clarifai_api.tag_images(image_array)
     results = results_json['results']
+    hashmap = createHashmap(results)
 
     all_results, text_results = find_objects(results)
     text_results_string = str(text_results)
@@ -83,3 +94,4 @@ def add_duplicate_probs(duplicate_pairs, adjustedprobs):
     return adjustedprobs
 
 main()
+

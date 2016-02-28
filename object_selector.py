@@ -36,21 +36,30 @@ def find_objects(results):
     for x in xrange(0 , len(results)-1):
         highestInfo = find_highest(x, results)
         prominentObjects.append(highestInfo)
-    checkForPopular()
+    # checkForPopular(results)
 
-def checkForPopular():
+def checkForPopular(results):
     D = defaultdict(list)
     for i,item in enumerate(names):
         D[item].append(i)
     D = {k:v for k,v in D.items() if len(v)>1}
-    
+    a = 0
+
     for x in xrange(0, len(D)):
-        indices = D.itervalues.next()
-        if len(indices>2):
+        indices = D.itervalues().next()
+        if len(indices)>2:
             for index in indices:
                 results[index]['result']['tag']['concept_ids'].pop(0)
                 results[index]['result']['tag']['classes'].pop(0)
                 results[index]['result']['tag']['probs'].pop(0)
+
+                highestInfo, timeInHours = find_highest(index, results)
+
+                prominentObjects.pop(index-a)
+                namesOfObjects.pop(index-a)
+                prominentObjects.insert(index-a, highestInfo)
+                namesOfObjects.insert(index-a, str(highestInfo[1]) + " at " + str(int(timeInHours)) + " o'clock.")
+                a += 1
 
 def find_highest(x, results):
     hourRatio = ((2.0*x + 1.0)/2.0)/len(results)
@@ -71,7 +80,7 @@ def find_highest(x, results):
     namesOfObjects.append(str(effectivenames[indexOfHighest]) + " at " + str(int(timeInHours)) + " o'clock.")
     highestInfo.append(effectiveprobs[indexOfHighest])
 
-    return highestInfo
+    return highestInfo, timeInHours
 
 def put_time_in_hours(hourRatio):
     hours = round(hourRatio*6, 0)

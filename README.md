@@ -10,19 +10,19 @@ Using a Kinect sensor which feeds data to the Clarifai API, our application is a
 On the software end, we used Python in conjunction with the Clarifai API to process images and provide the user with a general understanding of the positions of certain objects. On the hardware end, we used an Arduino 101 Intel Curie Board in conjunction with a rotary sensor and a grove base shield to determine the angles at which photos were taken by our Kinect sensor and to feed the pictures to our Python application. Lastly, we used Kinect's depth perception abilities to perform some preliminary distance calculations, to help a blind person avoid obstacles. 
 
 ## Challenges we ran into
-1) Figuring out what hardware to use-- on multiple occasions we ran into hardware limitations due to a lack of equipment. 
-2) Exporting Arduino outputs into python.
-3) Acquiring accurate data from the rotary sensor.
+1. Figuring out what hardware to use-- on multiple occasions we ran into hardware limitations due to a lack of equipment. 
+2. Exporting Arduino outputs into python.
+3. Acquiring accurate data from the rotary sensor.
 
 ## Accomplishments that we're proud of
-1) The makeshift mechanical construction we created in order to hold our hardware.
-2) Our output is fairly detailed, providing an overview of the general environment as well as specific directional information.
-3) Our integration of the Clarifai API and our utilization of the data provided to provide information to the user.
+1. The makeshift mechanical construction we created in order to hold our hardware.
+2. Our output is fairly detailed, providing an overview of the general environment as well as specific directional information.
+3. Our integration of the Clarifai API and our utilization of the data provided to provide information to the user.
 
 ## What we learned
-1) The abilities and possible utilizations of the Clarifai API.
-2) We were able to construct a mechanical alternative to the hardware we were unable to acquire.
-3) We learned a lot about Python and its computing power.
+1. The abilities and possible utilizations of the Clarifai API.
+2. We were able to construct a mechanical alternative to the hardware we were unable to acquire.
+3. We learned a lot about Python and its computing power.
 
 ## What's next for Spartifai
 In the future, we would look to scaling down the size of our prototype so it would be better suited to a blind person. One idea we have is to create a device that clips on to sunglasses, much like the ones many blind people wear today.

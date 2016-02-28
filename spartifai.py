@@ -30,11 +30,13 @@ x = int(ser.readline())
 kinect.save_depth_and_color(x/angle)
 while not done:
     x = int(ser.readline())
-    print x
     if x%angle ==0:
+        print x
         mins[int(x/angle)] = kinect.save_depth_and_color(int(x/angle))
     if x >= 180:
         done = True
+        kinect.close()
+        ser.close()
 
 minVal = mins[0]
 minIndex = 0

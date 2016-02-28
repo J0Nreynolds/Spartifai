@@ -63,9 +63,7 @@ class KinectInterface:
         # for index, x in np.ndenumerate(colors):
         #     colors
         minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(median)
-        print (str(minVal) + " is at " + str(minLoc))
         x,y,z = openni2.convert_depth_to_world(self.depth_stream, minLoc[0], minLoc[1], minVal)
-        print (x,y,z)
         return math.sqrt(pow(x,2)+pow(y,2)+pow(z,2))
 
     def close(self):

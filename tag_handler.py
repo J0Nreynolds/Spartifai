@@ -9,7 +9,7 @@ import random
 GENERALITIES_PHRASE = "In general, the following elements are in your vicinity... "
 SPECIFICS_SWITCHES = ['you will find', 'there is', 'you might encounter']
 SPECIFICS_PHRASE = "At your %s-o-clock, %s %s"
-REMOVALS = ['facial expression', 'blur', 'business', 'no person']
+REMOVALS = ['facial expression', 'blur', 'business', 'no person', 'airport']
 
 def createHashmap(results):
     relevantData = []
@@ -48,7 +48,7 @@ def find_generalities(results):
             results[x] = [a for a in results[x] if a[0] != common]
 
     for key in counts:
-        if counts[key] >= float(2)*float(len(results))/float(3):
+        if counts[key] >= float(3)*float(len(results))/float(4):
             for x in xrange(len(results)):
                 results[x] = [a for a in results[x] if a[0] != key]
     return generalities

@@ -27,3 +27,4 @@ while not done:
         done = True
 
     print int(ser.readline())
+ser.close()

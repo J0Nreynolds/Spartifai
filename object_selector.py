@@ -10,9 +10,11 @@ def createHashmap(results):
         resultsData = {}
         for y in range(0, len(results[x]['result']['tag']['probs'])):
             resultsData[str(results[x]['result']['tag']['classes'][y])] = results[x]['result']['tag']['probs'][y]
-        relevantData.append(resultsData)
-
-    print relevantData
+        result = sorted(resultsData.items(), key=operator.itemgetter(1))[::-1]
+        print result
+        print "\n"
+        relevantData.append(result)
+    #print relevantData
 
 def main():
     clarifai_api = ClarifaiApi()
@@ -37,11 +39,12 @@ def find_objects():
     for x in xrange(0 , len(relevantData)-1):
         highestInfo = find_highest(x)
         prominentObjects.append(highestInfo)
-    
+
     isDone = checkForPopular()
 
     while(isDone == False):
         find_objects()
+    pass
 
 def checkForPopular():
     D = defaultdict(list)
@@ -49,12 +52,12 @@ def checkForPopular():
         D[item].append(i)
     D = {k:v for k,v in D.items() if len(v)>1}
 
-    if len(D)!=0 :
+    if len(D)!=0 and len(D.values())>2:
         print D
         for x in xrange(0, len(D)):
             indices = D.itervalues().next()
             for index in indices:
-                del relevantData[index][relevantData[index].keys()[0]]
+                del relevantData[index][0]
         return False
     else:
         return True
@@ -63,8 +66,8 @@ def find_highest(x):
     hourRatio = ((2.0*x + 1.0)/2.0)/len(relevantData)
     timeInHours = put_time_in_hours(hourRatio)
     highestInfo = []
-    effectiveprobs = relevantData[x].values() + relevantData[x+1].values()
-    effectivenames = relevantData[x].keys() + relevantData[x+1].keys()
+    effectiveprobs = [a[1] for a in relevantData[x]] +  [a[1] for a in relevantData[x+1]]
+    effectivenames = [a[0] for a in relevantData[x]] + [a[0] for a in relevantData[x+1]]
     adjustedprobs = adjust_probs(effectiveprobs)
 
     duplicate_pairs = find_duplicates(effectivenames)

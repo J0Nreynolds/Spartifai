@@ -23,8 +23,8 @@ def main():
     results = results_json['results']
     hashmap = createHashmap(results)
 
-    all_results, text_results = find_objects(results)
-    text_results_string = str(text_results)
+    find_objects(results)
+    text_results_string = str(namesOfObjects)
     espeak(text_results_string)
 
 def espeak(string):
@@ -32,29 +32,46 @@ def espeak(string):
     subprocess.call(['espeak', "-s", "100", "-v", "+f2", string])
 
 def find_objects(results):
-    prominentObjects = []
-    namesOfObjects = []
     print results
     for x in xrange(0 , len(results)-1):
-        hourRatio = ((2.0*x + 1.0)/2.0)/len(results)
-        timeInHours = put_time_in_hours(hourRatio)
-        highestInfo = []
-        effectiveids = results[x]['result']['tag']['concept_ids'] + results[x+1]['result']['tag']['concept_ids']
-        effectiveprobs = results[x]['result']['tag']['probs'] + results[x+1]['result']['tag']['probs']
-        effectivenames = results[x]['result']['tag']['classes'] + results[x+1]['result']['tag']['classes']
-        adjustedprobs = adjust_probs(effectiveprobs)
-
-        duplicate_pairs = find_duplicates(effectiveids)
-        adjustedprobs = add_duplicate_probs(duplicate_pairs, adjustedprobs)
-
-        indexOfHighest = find_most_likely(adjustedprobs)
-        highestInfo.append(effectiveids[indexOfHighest])
-        highestInfo.append(effectivenames[indexOfHighest])
-        namesOfObjects.append(str(effectivenames[indexOfHighest]) + " at " + str(int(timeInHours)) + " o'clock.")
-        highestInfo.append(effectiveprobs[indexOfHighest])
-
+        highestInfo = find_highest(x, results)
         prominentObjects.append(highestInfo)
-    return prominentObjects, namesOfObjects
+    checkForPopular()
+
+def checkForPopular():
+    D = defaultdict(list)
+    for i,item in enumerate(names):
+        D[item].append(i)
+    D = {k:v for k,v in D.items() if len(v)>1}
+    
+    for x in xrange(0, len(D)):
+        indices = D.itervalues.next()
+        if len(indices>2):
+            for index in indices:
+                results[index]['result']['tag']['concept_ids'].pop(0)
+                results[index]['result']['tag']['classes'].pop(0)
+                results[index]['result']['tag']['probs'].pop(0)
+
+def find_highest(x, results):
+    hourRatio = ((2.0*x + 1.0)/2.0)/len(results)
+    timeInHours = put_time_in_hours(hourRatio)
+    highestInfo = []
+    effectiveids = results[x]['result']['tag']['concept_ids'] + results[x+1]['result']['tag']['concept_ids']
+    effectiveprobs = results[x]['result']['tag']['probs'] + results[x+1]['result']['tag']['probs']
+    effectivenames = results[x]['result']['tag']['classes'] + results[x+1]['result']['tag']['classes']
+    adjustedprobs = adjust_probs(effectiveprobs)
+
+    duplicate_pairs = find_duplicates(effectiveids)
+    adjustedprobs = add_duplicate_probs(duplicate_pairs, adjustedprobs)
+
+    indexOfHighest = find_most_likely(adjustedprobs)
+    highestInfo.append(effectiveids[indexOfHighest])
+    highestInfo.append(effectivenames[indexOfHighest])
+    names.append(str(effectivenames[indexOfHighest]))
+    namesOfObjects.append(str(effectivenames[indexOfHighest]) + " at " + str(int(timeInHours)) + " o'clock.")
+    highestInfo.append(effectiveprobs[indexOfHighest])
+
+    return highestInfo
 
 def put_time_in_hours(hourRatio):
     hours = round(hourRatio*6, 0)
@@ -92,6 +109,10 @@ def add_duplicate_probs(duplicate_pairs, adjustedprobs):
         adjustedprobs[index0] += adjustedprobs[index1]
         adjustedprobs[index1] = 0
     return adjustedprobs
+
+prominentObjects = []
+namesOfObjects = []
+names = []
 
 main()
 

@@ -45,7 +45,7 @@ def find_objects():
     while(isDone == False):
         find_objects()
     pass
-#checks to make sure there's not too many repeats 
+#checks to make sure there's not too many repeats
 def checkForPopular():
     D = defaultdict(list)
     for i,item in enumerate(names):

@@ -1,7 +1,11 @@
 from kinect_interface import KinectInterface
+import tag_handler
+import say
+
 import scipy.misc as misc
 import os
 #Get width
+path = os.getcwd()
 
 setwidth = 1920
 setviewangle = 84.1
@@ -20,7 +24,7 @@ ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
 #         i = i+1
 #     print int(ser.readline())
 angle = 15
-mins = [0]*int(180/angle)
+mins = [0]*int(180/angle + 1)
 done = False
 x = int(ser.readline())
 kinect.save_depth_and_color(x/angle)
@@ -28,7 +32,7 @@ while not done:
     x = int(ser.readline())
     print x
     if x%angle ==0:
-        mins[int(x/angle)-1] = kinect.save_depth_and_color(int(x/angle))
+        mins[int(x/angle)] = kinect.save_depth_and_color(int(x/angle))
     if x >= 180:
         done = True
 
@@ -38,4 +42,7 @@ for index, distance in enumerate(mins):
     if distance < min:
         minVal = distance # in millimeters
         minIndex = index
-print "The closest object appears at " + str(minIndex) + " and is " + str(minVal) + "."
+
+tag_handler.main(path)
+hour = tag_handler.put_time_in_hours(minIndex/12.0)
+say.say("Additionally, we detect the nearest object is " + str((float(minVal)/10.0)) + " centimeters away from you at your %s-o-clock." % int(hour))

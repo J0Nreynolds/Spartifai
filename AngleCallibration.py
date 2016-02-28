@@ -22,7 +22,7 @@ done = False
 while not done:
     x = int(ser.readline())
     if x%15 ==0:
-        print "%s I hate jews" % str(x/15)
+        print str(x/15)
     if x >= 180:
         done = True
 

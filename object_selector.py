@@ -25,11 +25,11 @@ def main():
 
     find_objects(relevantData)
     text_results_string = str(namesOfObjects)
-    espeak(text_results_string)
+    say(text_results_string)
 
-def espeak(string):
+def say(string):
     print string
-    subprocess.call(['espeak', "-s", "100", "-v", "+f2", string])
+    subprocess.call(['say', string])
 
 def find_objects(relevantData):
     del prominentObjects[:]
@@ -39,10 +39,10 @@ def find_objects(relevantData):
         highestInfo = find_highest(x, relevantData)
         prominentObjects.append(highestInfo)
     
-    relevantData, isDone = checkForPopular(relevantData)
+    # relevantData, isDone = checkForPopular(relevantData)
 
-    while(isDone == False):
-        find_objects(relevantData)
+    # while(isDone == False):
+    #     find_objects(relevantData)
 
 def checkForPopular(relevantData):
     D = defaultdict(list)

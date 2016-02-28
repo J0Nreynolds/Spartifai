@@ -1,9 +1,18 @@
 from clarifai.client import ClarifaiApi
-import nltk
 import pdb
 from collections import Counter
 from collections import defaultdict
 import subprocess
+
+def createHashmap(results):
+    relevantData = []
+    for x in xrange(0,len(results)):
+        resultsData = {}
+        for y in range(0, len(results[x]['result']['tag']['probs'])):
+            resultsData[str(results[x]['result']['tag']['classes'][y])] = results[x]['result']['tag']['probs'][y]
+        relevantData.append(resultsData)
+    print relevantData
+    return relevantData
 
 def main():
     clarifai_api = ClarifaiApi()
@@ -12,8 +21,7 @@ def main():
     image_array = [open('output/rgb_img_' + str(x) + ".jpg", 'rb') for x in xrange(1,13)]
     results_json = clarifai_api.tag_images(image_array)
     results = results_json['results']
-    # for result in results:
-    #     result = return_nouns(result)
+    relevantData = createHashmap(results)
 
     all_results, text_results = find_objects(results)
     text_results_string = str(text_results)
@@ -67,7 +75,48 @@ def find_objects(results):
         highestInfo.append(effectiveprobs[indexOfHighest])
 
         prominentObjects.append(highestInfo)
-    return prominentObjects, namesOfObjects
+
+    # relevantData, isDone = checkForPopular(relevantData)
+
+    # while(isDone == False):
+    #     find_objects(relevantData)
+
+def checkForPopular(relevantData):
+    D = defaultdict(list)
+    for i,item in enumerate(names):
+        D[item].append(i)
+    D = {k:v for k,v in D.items() if len(v)>1}
+
+    if len(D)!=0 :
+        print D
+        for x in xrange(0, len(D)):
+            indices = D.itervalues().next()
+            for index in indices:
+                del relevantData[index][relevantData[index].keys()[0]]
+        return relevantData, False
+    else:
+        return relevantData, True
+
+def find_highest(x, relevantData):
+    hourRatio = ((2.0*x + 1.0)/2.0)/len(relevantData)
+    timeInHours = put_time_in_hours(hourRatio)
+    highestInfo = []
+    effectiveprobs = relevantData[x].values() + relevantData[x+1].values()
+    effectivenames = relevantData[x].keys() + relevantData[x+1].keys()
+    adjustedprobs = adjust_probs(effectiveprobs)
+
+    duplicate_pairs = find_duplicates(effectivenames)
+    adjustedprobs = add_duplicate_probs(duplicate_pairs, adjustedprobs)
+
+    indexOfHighest = find_most_likely(adjustedprobs)
+
+    highestInfo.append(effectivenames[indexOfHighest])
+    highestInfo.append(effectiveprobs[indexOfHighest])
+
+    names.append(str(effectivenames[indexOfHighest]))
+    namesOfObjects.append(str(effectivenames[indexOfHighest]) + " at " + str(int(timeInHours)) + " o'clock.")
+
+    return highestInfo
 
 def put_time_in_hours(hourRatio):
     hours = round(hourRatio*6, 0)
@@ -105,5 +154,9 @@ def add_duplicate_probs(duplicate_pairs, adjustedprobs):
         adjustedprobs[index0] += adjustedprobs[index1]
         adjustedprobs[index1] = 0
     return adjustedprobs
+
+prominentObjects = []
+namesOfObjects = []
+names = []
 
 main()

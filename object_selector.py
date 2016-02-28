@@ -3,16 +3,16 @@ import pdb
 from collections import Counter
 from collections import defaultdict
 import subprocess
+import operator
 
 def createHashmap(results):
-    relevantData = []
     for x in xrange(0,len(results)):
         resultsData = {}
         for y in range(0, len(results[x]['result']['tag']['probs'])):
             resultsData[str(results[x]['result']['tag']['classes'][y])] = results[x]['result']['tag']['probs'][y]
         relevantData.append(resultsData)
+
     print relevantData
-    return relevantData
 
 def main():
     clarifai_api = ClarifaiApi()
@@ -21,9 +21,9 @@ def main():
     image_array = [open('output/rgb_img_' + str(x) + ".jpg", 'rb') for x in xrange(1,13)]
     results_json = clarifai_api.tag_images(image_array)
     results = results_json['results']
-    relevantData = createHashmap(results)
+    createHashmap(results)
 
-    find_objects(relevantData)
+    find_objects()
     text_results_string = str(namesOfObjects)
     say(text_results_string)
 
@@ -31,20 +31,20 @@ def say(string):
     print string
     subprocess.call(['say', string])
 
-def find_objects(relevantData):
+def find_objects():
     del prominentObjects[:]
     del namesOfObjects[:]
     del names[:]
     for x in xrange(0 , len(relevantData)-1):
-        highestInfo = find_highest(x, relevantData)
+        highestInfo = find_highest(x)
         prominentObjects.append(highestInfo)
     
-    # relevantData, isDone = checkForPopular(relevantData)
+    isDone = checkForPopular()
 
-    # while(isDone == False):
-    #     find_objects(relevantData)
+    while(isDone == False):
+        find_objects()
 
-def checkForPopular(relevantData):
+def checkForPopular():
     D = defaultdict(list)
     for i,item in enumerate(names):
         D[item].append(i)
@@ -56,11 +56,11 @@ def checkForPopular(relevantData):
             indices = D.itervalues().next()
             for index in indices:
                 del relevantData[index][relevantData[index].keys()[0]]
-        return relevantData, False
+        return False
     else:
-        return relevantData, True
+        return True
 
-def find_highest(x, relevantData):
+def find_highest(x):
     hourRatio = ((2.0*x + 1.0)/2.0)/len(relevantData)
     timeInHours = put_time_in_hours(hourRatio)
     highestInfo = []
@@ -118,6 +118,7 @@ def add_duplicate_probs(duplicate_pairs, adjustedprobs):
         adjustedprobs[index1] = 0
     return adjustedprobs
 
+relevantData = []
 prominentObjects = []
 namesOfObjects = []
 names = []

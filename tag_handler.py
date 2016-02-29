@@ -9,7 +9,7 @@ import random
 GENERALITIES_PHRASE = "In general, the following elements are in your vicinity... "
 SPECIFICS_SWITCHES = ['you will find', 'there is', 'you might encounter']
 SPECIFICS_PHRASE = "At your %s-o-clock, %s %s"
-REMOVALS = ['facial expression', 'blur', 'business', 'no person', 'airport']
+REMOVALS = ['facial expression', 'blur', 'business', 'no person', 'airport', 'contemporary']
 
 def createHashmap(results):
     relevantData = []
@@ -48,7 +48,7 @@ def find_generalities(results):
             results[x] = [a for a in results[x] if a[0] != common]
 
     for key in counts:
-        if counts[key] >= float(3)*float(len(results))/float(4):
+        if counts[key] >= float(1)*float(len(results))/float(2):
             for x in xrange(len(results)):
                 results[x] = [a for a in results[x] if a[0] != key]
     return generalities
@@ -77,6 +77,7 @@ def main(path):
     image_array = [open(path+ '/output/rgb_img_' + str(x) + ".jpg", 'rb') for x in xrange(1,13)]
     results_json = clarifai_api.tag_images(image_array)
     results = createHashmap(results_json['results'])
+    print results
     generalities = find_generalities(results)
     print generalities
     generalities_phrase = GENERALITIES_PHRASE
@@ -91,6 +92,8 @@ def main(path):
     for x in xrange(len(specifics)):
         hour = put_time_in_hours(float(x)/float(len(specifics)))
         choice = random.choice(SPECIFICS_SWITCHES)
+        if specifics[x] == 'server':
+            specifics[x] = 'vending machine'
         specifics_phrase = SPECIFICS_PHRASE % (int(hour), choice, specifics[x])
         say.say(specifics_phrase)
 

@@ -47,6 +47,7 @@ class KinectInterface:
     def save_depth_and_color(self, iteration):
         depth_img = self.get_depth_img()
         rgb_img = self.get_rgb_img()
+        
         # depth_inquiry[depth_inquiry > 180] = 0
         misc.imsave(self.path +'/output/rgb_img_'+ str(iteration) + '.jpg', rgb_img)
         misc.imsave(self.path +'/output/depth_img_'+ str(iteration) + '.jpg', depth_img)

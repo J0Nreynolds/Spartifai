@@ -1,4 +1,4 @@
-#Spartify
+#Spartifai
 
 Awarded: **Best Use of Clarifai API and Best Use of Microsoft Technology (Honorable Mention)**
 

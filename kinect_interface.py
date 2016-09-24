@@ -6,6 +6,9 @@ import math
 import cv2
 
 
+#Example usage:
+# kinect = KinectInterface()
+# kinect.save_depth_and_color(0)
 
 class KinectInterface:
     def __init__(self):
@@ -28,10 +31,9 @@ class KinectInterface:
         depth_frame = self.depth_stream.read_frame()
         depth_frame_data = depth_frame.get_buffer_as_uint16()
         img  = np.frombuffer(depth_frame_data, dtype=np.uint16)
-        img.shape = (1, 480, 640)#small chance these may be reversed in certain apis...This order? Really?
-        #filling rgb channels with duplicates so matplotlib can draw it (expects rgb)
+        img.shape = (1, 480, 640)
+        #Give it 3 channels (RGB) so it's a proper image
         img = np.concatenate((img, img, img), axis=0)
-        #because the order is so weird, rearrange it (third dimension must be 3 or 4)
         img = np.swapaxes(img, 0, 2)
         img = np.swapaxes(img, 0, 1)
         img = img[0:424, 0:512]
@@ -47,13 +49,13 @@ class KinectInterface:
     def save_depth_and_color(self, iteration):
         depth_img = self.get_depth_img()
         rgb_img = self.get_rgb_img()
-        
+
         # depth_inquiry[depth_inquiry > 180] = 0
         misc.imsave(self.path +'/output/rgb_img_'+ str(iteration) + '.jpg', rgb_img)
         misc.imsave(self.path +'/output/depth_img_'+ str(iteration) + '.jpg', depth_img)
 
         depth_inquiry = depth_img.copy()
-        # Depth threshold test - gets rid of near
+        # Depth threshold test - gets rid of near noise
         depth_inquiry[depth_inquiry < 50] = 65535
 
         # depth_inquiry[depth_inquiry > 0] = 255
@@ -71,7 +73,3 @@ class KinectInterface:
         self.rgb_stream.close()
         self.depth_stream.close()
         openni2.unload()
-
-#Example usage:
-# kinect = KinectInterface()
-# kinect.save_depth_and_color(0)

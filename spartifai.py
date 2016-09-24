@@ -1,35 +1,21 @@
 from kinect_interface import KinectInterface
 import tag_handler
 import say
-
-import scipy.misc as misc
-import os
-#Get width
-path = os.getcwd()
-
-setwidth = 1920
-setviewangle = 84.1
-
-#get angle data from arduino
 import serial
 import time
+import scipy.misc as misc
+import os
+
+path = os.getcwd()
 ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
-
 kinect = KinectInterface()
-
-# i = 1
-# while x < 180:
-#     if int(ser.readline()) - x >= 15:
-#         print "%d I hate jews" % i
-#         x = int(ser.readline())
-#         i = i+1
-#     print int(ser.readline())
 angle = 15
 mins = [0]*int(180/angle + 1)
 done_pics = [False]*int(180/angle + 1)
 done = False
 x = int(ser.readline())
 mins[0] = kinect.save_depth_and_color(x/angle)
+
 while not done:
     x = int(ser.readline())
     if x%angle ==0 and not done_pics[int(x/angle)]:

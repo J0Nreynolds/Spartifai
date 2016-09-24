@@ -1,5 +1,3 @@
-
-
 from clarifai.client import ClarifaiApi
 import nltk
 import pdb

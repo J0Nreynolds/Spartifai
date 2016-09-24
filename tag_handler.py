@@ -73,7 +73,11 @@ def find_specifics(results):
 def main(path):
     clarifai_api = ClarifaiApi()
 
+<<<<<<< HEAD
     # ADD ANY MORE IMAGES HERE, PROGRAM SHOULD ADJUST
+=======
+    #ADD ANY MORE IMAGES HERE, PROGRAM SHOULD ADJUST
+>>>>>>> dcb7ca642ca56de91ef71e53997a79142940fe45
     image_array = [open(path+ '/output/rgb_img_' + str(x) + ".jpg", 'rb') for x in xrange(1,13)]
     results_json = clarifai_api.tag_images(image_array)
     results = createHashmap(results_json['results'])

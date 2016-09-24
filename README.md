@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 #Spartify
+=======
+#Spartifai
+
+Awarded: **Best Use of Clarifai API and Best Use of Microsoft Technology (Honorable Mention)**
+>>>>>>> dcb7ca642ca56de91ef71e53997a79142940fe45
 
 ## Inspiration
 When introduced to the Clarifai API, our first thought was to use it to provide vision where it currently isn't available, and to nobody is it a bigger problem than it is to the blind community. Seeing-eye dogs are undeniably powerful tools at their disposal, but if a technology were created in the future to help them fully analyze their environment, it could change their quality of life drastically. From here, we set off to creating our prototype. 

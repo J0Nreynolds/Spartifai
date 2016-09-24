@@ -1,16 +1,6 @@
 from kinect_interface import KinectInterface
 import tag_handler
 import say
-<<<<<<< HEAD
-import serial
-import time
-import scipy.misc as misc
-import os
-
-path = os.getcwd()
-ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
-kinect = KinectInterface()
-=======
 
 import scipy.misc as misc
 import os
@@ -34,17 +24,16 @@ kinect = KinectInterface()
 #         x = int(ser.readline())
 #         i = i+1
 #     print int(ser.readline())
->>>>>>> dcb7ca642ca56de91ef71e53997a79142940fe45
+
+
 angle = 15
 mins = [0]*int(180/angle + 1)
 done_pics = [False]*int(180/angle + 1)
 done = False
 x = int(ser.readline())
 mins[0] = kinect.save_depth_and_color(x/angle)
-<<<<<<< HEAD
 
-=======
->>>>>>> dcb7ca642ca56de91ef71e53997a79142940fe45
+
 while not done:
     x = int(ser.readline())
     if x%angle ==0 and not done_pics[int(x/angle)]:

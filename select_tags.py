@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-
-
->>>>>>> dcb7ca642ca56de91ef71e53997a79142940fe45
 from clarifai.client import ClarifaiApi
 import nltk
 import pdb

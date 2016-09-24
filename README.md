@@ -1,22 +1,19 @@
-<<<<<<< HEAD
-#Spartify
-=======
 #Spartifai
 
 Awarded: **Best Use of Clarifai API and Best Use of Microsoft Technology (Honorable Mention)**
->>>>>>> dcb7ca642ca56de91ef71e53997a79142940fe45
+
 
 ## Inspiration
-When introduced to the Clarifai API, our first thought was to use it to provide vision where it currently isn't available, and to nobody is it a bigger problem than it is to the blind community. Seeing-eye dogs are undeniably powerful tools at their disposal, but if a technology were created in the future to help them fully analyze their environment, it could change their quality of life drastically. From here, we set off to creating our prototype. 
+When introduced to the Clarifai API, our first thought was to use it to provide vision where it currently isn't available, and to nobody is it a bigger problem than it is to the blind community. Seeing-eye dogs are undeniably powerful tools at their disposal, but if a technology were created in the future to help them fully analyze their environment, it could change their quality of life drastically. From here, we set off to creating our prototype.
 
 ## What it does
-Using a Kinect sensor which feeds data to the Clarifai API, our application is able to discern objects in your surroundings in a 180 degree radius. It then uses a text to speech program to read this data out loud, giving a blind person a general understanding of their environment. 
+Using a Kinect sensor which feeds data to the Clarifai API, our application is able to discern objects in your surroundings in a 180 degree radius. It then uses a text to speech program to read this data out loud, giving a blind person a general understanding of their environment.
 
 ## How we built it
-On the software end, we used Python in conjunction with the Clarifai API to process images and provide the user with a general understanding of the positions of certain objects. On the hardware end, we used an Arduino 101 Intel Curie Board in conjunction with a rotary sensor and a grove base shield to determine the angles at which photos were taken by our Kinect sensor and to feed the pictures to our Python application. Lastly, we used Kinect's depth perception abilities to perform some preliminary distance calculations, to help a blind person avoid obstacles. 
+On the software end, we used Python in conjunction with the Clarifai API to process images and provide the user with a general understanding of the positions of certain objects. On the hardware end, we used an Arduino 101 Intel Curie Board in conjunction with a rotary sensor and a grove base shield to determine the angles at which photos were taken by our Kinect sensor and to feed the pictures to our Python application. Lastly, we used Kinect's depth perception abilities to perform some preliminary distance calculations, to help a blind person avoid obstacles.
 
 ## Challenges we ran into
-1. Figuring out what hardware to use-- on multiple occasions we ran into hardware limitations due to a lack of equipment. 
+1. Figuring out what hardware to use-- on multiple occasions we ran into hardware limitations due to a lack of equipment.
 2. Exporting Arduino outputs into python.
 3. Acquiring accurate data from the rotary sensor.
 
